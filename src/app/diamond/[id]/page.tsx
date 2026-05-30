@@ -244,7 +244,8 @@ export default function DiamondJourneyPage() {
   ].filter((f) => f.value);
 
   return (
-    <div ref={container} className="relative min-h-screen bg-transparent text-[#e2e8f0] font-sans">
+    <>
+    <div ref={container} className="no-print relative min-h-screen bg-transparent text-[#e2e8f0] font-sans">
       {/* Top Navigation */}
       <nav className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6 no-print">
         <Link href="/" className="flex items-center gap-2">
@@ -663,8 +664,10 @@ export default function DiamondJourneyPage() {
 
       <Footer />
 
+    </div>
+
       {/* ── PRINT-ONLY CERTIFICATE ─────────────────────────── */}
-      <div className="print-certificate hidden">
+      <div className="print-certificate">
         {/* Header */}
         <div className="cert-header">
           <div className="cert-logo">
@@ -773,6 +776,6 @@ export default function DiamondJourneyPage() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

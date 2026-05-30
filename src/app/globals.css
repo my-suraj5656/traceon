@@ -509,6 +509,9 @@ body {
   .hide-desktop { display: none !important; }
 }
 
+/* Screen: keep print certificate invisible */
+.print-certificate { display: none; }
+
 /* ── Print Styles (Diamond Journey Certificate) ───────────── */
 @media print {
   @page { size: A4; margin: 12mm 14mm; }
@@ -517,17 +520,13 @@ body {
 
   body { background: white !important; color: #1a1a1a !important; }
 
-  /* Hide all screen content */
-  body > *,
+  /* Hide all screen-only content */
   .no-print,
-  nav,
-  .timeline-section,
-  .certificate-section,
-  .particle-field,
-  footer { display: none !important; }
+  .particle-field { display: none !important; }
 
-  /* Show only print certificate */
+  /* Show print certificate */
   .print-certificate {
+    display: block !important;
     display: block !important;
     width: 100%;
     font-family: Georgia, "Times New Roman", serif;
