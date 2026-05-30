@@ -169,6 +169,7 @@ export default function StageCard({
   const getFieldLabel = (key: string) =>
     key === "packetId" ? "Packet ID"
       : key === "video360Url" ? "Planning Video"
+      : key === "view360Url" ? "360 View"
       : key === "yehuda360Url" ? "360 Yehuda View"
       : key === "gradingVideoUrl" ? "Grading Video"
       : key === "laserVideoUrl" ? "Laser & Sawing Video"
