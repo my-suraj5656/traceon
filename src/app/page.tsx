@@ -470,8 +470,9 @@ export default function HomePage() {
             </div>
           ))}
           {featuredDiamonds.map((diamond) => {
-            const roughImg = Array.isArray(diamond.stage5?.rawImageUrls) ? normalizeMediaUrl(diamond.stage5.rawImageUrls[0]) : null;
-            const polishedImg = Array.isArray(diamond.stage14?.finalImageSet) ? normalizeMediaUrl(diamond.stage14.finalImageSet[0]) : null;
+            const staticImgs = (IMAGES.diamonds as Record<string, { rough: string; polished: string }>)[diamond.roughId];
+            const roughImg = staticImgs?.rough ?? (Array.isArray(diamond.stage5?.rawImageUrls) ? normalizeMediaUrl(diamond.stage5.rawImageUrls[0]) : null);
+            const polishedImg = staticImgs?.polished ?? (Array.isArray(diamond.stage14?.finalImageSet) ? normalizeMediaUrl(diamond.stage14.finalImageSet[0]) : null);
             const carat = diamond.stage13?.finalCarat ?? "—";
             const color = diamond.stage13?.finalColor ?? "—";
             const clarity = diamond.stage13?.finalClarity ?? "—";
