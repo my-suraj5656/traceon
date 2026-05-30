@@ -72,28 +72,29 @@ export default function DiamondJourneyPage() {
     return () => obs.disconnect();
   }, [isLoading, diamond, toastDismissed]);
 
-  // Compute stage video for visible stage (derived — no state setter needed)
+  // Compute stage video for the currently visible stage (derived value)
   const diamondVideo = (() => {
     if (!diamond || visibleStageIdx < 0) return null;
     const stageNum = stages[visibleStageIdx]?.number;
     if (!stageNum) return null;
-    const planningVideo = diamond.stage5?.video360Url
-      ? { url: normalizeMediaUrl(diamond.stage5.video360Url), label: "Planning Video" }
-      : null;
+    const v360 = diamond.stage5?.video360Url;
     switch (stageNum) {
-      case 5:
-      case 6:  return planningVideo;
+      case 5:  return v360 ? { url: normalizeMediaUrl(v360), label: "360 View" } : null;
+      case 6:  return v360 ? { url: normalizeMediaUrl(v360), label: "Planning Video" } : null;
       case 10: return { url: VIDEOS.laser,    label: "Laser & Sawing" };
       case 11: return { url: VIDEOS.bruting,  label: "Bruting Process" };
       case 12: return { url: VIDEOS.polishing, label: "Polishing Process" };
       case 13: return { url: VIDEOS.grading,  label: "Grading Process" };
       case 14: {
-        const v = diamond.stage14?.final360Video;
-        return v ? { url: normalizeMediaUrl(v), label: "Final Diamond" } : null;
+        const fv = diamond.stage14?.final360Video;
+        return fv ? { url: normalizeMediaUrl(fv), label: "Final Diamond" } : null;
       }
-      default: return null;
+      default: return null;  // stages 1,2,3,7 — no video
     }
   })();
+
+  // true when a stage is visible but has no video — hide play button entirely
+  const stageVisibleNoVideo = visibleStageIdx >= 0 && diamondVideo === null;
 
   // IntersectionObserver — track which stage is centred in viewport
   // rootMargin shrinks the detection zone to middle 40% of screen height
@@ -423,21 +424,27 @@ export default function DiamondJourneyPage() {
                     alt="Traveling Diamond"
                     className="diamond-spin w-full h-full object-contain drop-shadow-[0_0_25px_rgba(165,215,232,0.8)] group-hover:drop-shadow-[0_0_40px_rgba(165,215,232,1)] transition-all duration-300"
                   />
-                  {/* Pulsing ring when stage video available */}
+                  {/* Pulsing ring only when stage has a video */}
                   {diamondVideo && (
                     <span className="absolute inset-0 rounded-full animate-ping opacity-30 pointer-events-none"
                       style={{ background: "radial-gradient(circle, rgba(165,215,232,0.6) 0%, transparent 70%)" }} />
                   )}
-                  <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${diamondVideo ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${diamondVideo ? "bg-[#A5D7E8]/40 border-2 border-[#A5D7E8]" : "bg-[#A5D7E8]/20 border border-[#A5D7E8]/50"}`}>
-                      <svg className="w-3.5 h-3.5 text-[#A5D7E8] ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  {/* Play button — hidden on no-video stages (1,2,3,7), hover-only for journey */}
+                  {!stageVisibleNoVideo && (
+                    <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${diamondVideo ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${diamondVideo ? "bg-[#A5D7E8]/40 border-2 border-[#A5D7E8]" : "bg-[#A5D7E8]/20 border border-[#A5D7E8]/50"}`}>
+                        <svg className="w-3.5 h-3.5 text-[#A5D7E8] ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
-                <span className="text-[9px] font-bold tracking-widest uppercase whitespace-nowrap transition-colors duration-300"
-                  style={{ color: diamondVideo ? "#A5D7E8" : "rgba(165,215,232,0.6)" }}>
-                  {diamondVideo ? diamondVideo.label : "Watch Journey"}
-                </span>
+                {/* Label — hidden on no-video stages */}
+                {!stageVisibleNoVideo && (
+                  <span className="text-[9px] font-bold tracking-widest uppercase whitespace-nowrap transition-colors duration-300"
+                    style={{ color: diamondVideo ? "#A5D7E8" : "rgba(165,215,232,0.6)" }}>
+                    {diamondVideo ? diamondVideo.label : "Watch Journey"}
+                  </span>
+                )}
               </button>
             ))}
 
