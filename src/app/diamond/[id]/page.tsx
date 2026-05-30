@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { stages } from "@/lib/design-tokens";
-import { VIDEOS, IMAGES } from "@/lib/media";
+import { VIDEOS, IMAGES, normalizeMediaUrl } from "@/lib/media";
 import Footer from "@/components/shared/footer";
 import StageCard from "@/components/diamond/stage-card";
 import { useParams } from "next/navigation";
@@ -43,7 +43,10 @@ export default function DiamondJourneyPage() {
   const [journeyModal, setJourneyModal] = useState(false);
   const [showJourneyToast, setShowJourneyToast] = useState(false);
   const [toastDismissed, setToastDismissed] = useState(false);
+  const [diamondVideo, setDiamondVideo] = useState<{ url: string; label: string } | null>(null);
+  const [activeStageVideo, setActiveStageVideo] = useState<{ url: string; label: string } | null>(null);
   const journeyVideoRef = useRef<HTMLVideoElement>(null);
+  const stageVideoRef = useRef<HTMLVideoElement>(null);
   const timelineEndRef = useRef<HTMLDivElement>(null);
   const container = useRef<HTMLDivElement>(null);
 
@@ -69,6 +72,27 @@ export default function DiamondJourneyPage() {
     return () => obs.disconnect();
   }, [isLoading, diamond, toastDismissed]);
 
+  // Returns the process video for a given stage number (if any)
+  const getStageVideo = (stageNum: number): { url: string; label: string } | null => {
+    if (!diamond) return null;
+    const planningVideo = diamond.stage5?.video360Url
+      ? { url: normalizeMediaUrl(diamond.stage5.video360Url), label: "Planning Video" }
+      : null;
+    switch (stageNum) {
+      case 5:
+      case 6:  return planningVideo;
+      case 10: return { url: VIDEOS.laser,    label: "Laser & Sawing" };
+      case 11: return { url: VIDEOS.bruting,  label: "Bruting Process" };
+      case 12: return { url: VIDEOS.polishing, label: "Polishing Process" };
+      case 13: return { url: VIDEOS.grading,  label: "Grading Process" };
+      case 14: {
+        const v = diamond.stage14?.final360Video;
+        return v ? { url: normalizeMediaUrl(v), label: "Final Diamond" } : null;
+      }
+      default: return null;
+    }
+  };
+
   // Auto-scroll through stages after page loads
   useEffect(() => {
     if (isLoading || !diamond) return;
@@ -92,14 +116,23 @@ export default function DiamondJourneyPage() {
       const scrollNext = () => {
         if (stopped || i >= nodes.length) return;
         nodes[i].scrollIntoView({ behavior: "smooth", block: "center" });
+        // Set stage video on diamond for this stage
+        const stageNum = stages[i]?.number;
+        setDiamondVideo(stageNum ? getStageVideo(stageNum) : null);
         i++;
-        timeoutId = setTimeout(scrollNext, 4000);
+        if (i >= nodes.length) {
+          // All stages done — revert to journey video
+          timeoutId = setTimeout(() => setDiamondVideo(null), 4000);
+        } else {
+          timeoutId = setTimeout(scrollNext, 4000);
+        }
       };
       scrollNext();
     }, 3000);
 
     return () => {
       stop();
+      setDiamondVideo(null);
       window.removeEventListener("touchstart", stop);
       window.removeEventListener("wheel", stop);
       window.removeEventListener("keydown", stop);
@@ -359,9 +392,15 @@ export default function DiamondJourneyPage() {
             {(["hidden md:flex", "flex md:hidden"] as const).map((vis, idx) => (
               <button
                 key={idx}
-                onClick={() => setJourneyModal(true)}
+                onClick={() => {
+                  if (diamondVideo) {
+                    setActiveStageVideo(diamondVideo);
+                  } else {
+                    setJourneyModal(true);
+                  }
+                }}
                 className={`traveling-diamond absolute ${idx === 0 ? "left-[-24px] md:left-1/2 md:-translate-x-1/2" : "left-[-24px]"} top-0 z-20 w-24 h-24 mt-6 ${vis} flex-col items-center gap-1.5 group cursor-pointer bg-transparent border-none p-0 outline-none`}
-                title="Watch full journey video"
+                title={diamondVideo ? `Play: ${diamondVideo.label}` : "Watch full journey video"}
               >
                 <div className="diamond-bounce w-full h-full flex items-center justify-center relative">
                   <img
@@ -369,13 +408,21 @@ export default function DiamondJourneyPage() {
                     alt="Traveling Diamond"
                     className="diamond-spin w-full h-full object-contain drop-shadow-[0_0_25px_rgba(165,215,232,0.8)] group-hover:drop-shadow-[0_0_40px_rgba(165,215,232,1)] transition-all duration-300"
                   />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="w-8 h-8 rounded-full bg-[#A5D7E8]/20 border border-[#A5D7E8]/50 flex items-center justify-center backdrop-blur-sm">
+                  {/* Pulsing ring when stage video available */}
+                  {diamondVideo && (
+                    <span className="absolute inset-0 rounded-full animate-ping opacity-30 pointer-events-none"
+                      style={{ background: "radial-gradient(circle, rgba(165,215,232,0.6) 0%, transparent 70%)" }} />
+                  )}
+                  <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${diamondVideo ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${diamondVideo ? "bg-[#A5D7E8]/40 border-2 border-[#A5D7E8]" : "bg-[#A5D7E8]/20 border border-[#A5D7E8]/50"}`}>
                       <svg className="w-3.5 h-3.5 text-[#A5D7E8] ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                     </div>
                   </div>
                 </div>
-                <span className="text-[9px] font-bold tracking-widest uppercase text-[#A5D7E8]/60 animate-pulse whitespace-nowrap">Watch Journey</span>
+                <span className="text-[9px] font-bold tracking-widest uppercase whitespace-nowrap transition-colors duration-300"
+                  style={{ color: diamondVideo ? "#A5D7E8" : "rgba(165,215,232,0.6)" }}>
+                  {diamondVideo ? diamondVideo.label : "Watch Journey"}
+                </span>
               </button>
             ))}
 
@@ -653,6 +700,42 @@ export default function DiamondJourneyPage() {
             <video
               ref={journeyVideoRef}
               src={VIDEOS.journey}
+              className="w-full aspect-video"
+              controls
+              autoPlay
+              playsInline
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Stage Video Modal */}
+      {activeStageVideo && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#050912]/80 backdrop-blur-md"
+          onClick={() => { setActiveStageVideo(null); stageVideoRef.current?.pause(); }}
+        >
+          <div
+            className="relative w-full max-w-3xl rounded-3xl overflow-hidden border border-[#A5D7E8]/20 bg-[#070e17] shadow-[0_0_80px_rgba(165,215,232,0.15)]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
+              <div>
+                <p className="text-[10px] font-bold tracking-widest uppercase text-[#A5D7E8]/60">Stage Video</p>
+                <p className="text-sm font-display font-medium text-white mt-0.5">{activeStageVideo.label}</p>
+              </div>
+              <button
+                onClick={() => { setActiveStageVideo(null); stageVideoRef.current?.pause(); }}
+                className="w-8 h-8 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/60 hover:text-white transition-all"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+            <video
+              ref={stageVideoRef}
+              src={activeStageVideo.url}
               className="w-full aspect-video"
               controls
               autoPlay
