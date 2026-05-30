@@ -425,14 +425,16 @@ export default function DiamondJourneyPage() {
                 }
               }
 
-              // Stage 5: remove planning video, show yehuda 360 from stage 6 instead
+              // Stage 5: show yehuda 360 if proper URL, otherwise keep planning video from Cloudinary
               if (stage.number === 5 && displayData) {
-                const { video360Url: _v, ...rest5 } = displayData;
-                displayData = rest5;
                 const im = (diamond.stage6 as any)?.inclusionMap as Record<string, unknown> | null;
-                if (im?.yehuda360Url) {
-                  displayData = { ...displayData, yehuda360Url: im.yehuda360Url };
+                const yehudaUrl = im?.yehuda360Url as string | null | undefined;
+                const isProper360 = yehudaUrl && !/\.html?$/i.test(yehudaUrl);
+                if (isProper360) {
+                  const { video360Url: _v, ...rest5 } = displayData;
+                  displayData = { ...rest5, yehuda360Url: yehudaUrl };
                 }
+                // If yehuda360Url is an HTML file or missing, keep video360Url (planning video)
               }
 
               // Stage 6: remove yehuda360Url, show planning video from stage 5 instead

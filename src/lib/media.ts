@@ -6,8 +6,6 @@ export function normalizeMediaUrl(url: string): string {
   if (!url) return url;
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
   const path = url.startsWith("/") ? url : `/${url}`;
-  // HTML files (yehuda360 viewers) are served from public/ — keep as relative path
-  if (/\.html?$/i.test(path)) return path;
   const isVideo = /\.(mp4|mov|webm|avi|ogg)/i.test(path);
   return `${CDN}/${isVideo ? "video" : "image"}/upload/traceon${path}`;
 }
