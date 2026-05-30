@@ -65,9 +65,13 @@ export const IMAGES = {
       rough:    `${CDN}/image/upload/v1780143490/traceon/diamonds/RGH-26-012/img1.jpg`,
       polished: `${CDN}/image/upload/v1780143492/traceon/diamonds/RGH-26-012/img2.jpg`,
     },
+    "TN0133955": {
+      rough:    `${CDN}/image/upload/v1780143677/traceon/diamonds/RGH-26-013/img1.jpg`,
+      polished: `${CDN}/image/upload/v1780143678/traceon/diamonds/RGH-26-013/img2.jpg`,
+    },
     "RGH-26-013": {
-      rough:    `${CDN}/image/upload/traceon/diamonds/RGH-26-013/rough.png`,
-      polished: `${CDN}/image/upload/traceon/diamonds/RGH-26-013/polished.png`,
+      rough:    `${CDN}/image/upload/v1780143677/traceon/diamonds/RGH-26-013/img1.jpg`,
+      polished: `${CDN}/image/upload/v1780143678/traceon/diamonds/RGH-26-013/img2.jpg`,
     },
     "RGH-26-014": {
       rough:    `${CDN}/image/upload/traceon/diamonds/RGH-26-014/rough.png`,
