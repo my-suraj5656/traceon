@@ -436,26 +436,34 @@ export default function DiamondJourneyPage() {
                     alt="Traveling Diamond"
                     className="diamond-spin w-full h-full object-contain drop-shadow-[0_0_25px_rgba(165,215,232,0.8)] group-hover:drop-shadow-[0_0_40px_rgba(165,215,232,1)] transition-all duration-300"
                   />
-                  {/* Pulsing ring only when stage has a video */}
+                  {/* Pulsing ring when stage has a video */}
                   {diamondVideo && (
                     <span className="absolute inset-0 rounded-full animate-ping opacity-30 pointer-events-none"
                       style={{ background: "radial-gradient(circle, rgba(165,215,232,0.6) 0%, transparent 70%)" }} />
                   )}
-                  {/* Play button — hidden on no-video stages (1,2,3,7), hover-only for journey */}
-                  {!stageVisibleNoVideo && (
-                    <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${diamondVideo ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${diamondVideo ? "bg-[#A5D7E8]/40 border-2 border-[#A5D7E8]" : "bg-[#A5D7E8]/20 border border-[#A5D7E8]/50"}`}>
-                        <svg className="w-3.5 h-3.5 text-[#A5D7E8] ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                      </div>
-                    </div>
-                  )}
                 </div>
-                {/* Label — hidden on no-video stages */}
+
+                {/* Stage-card style pill button — hidden on no-video stages */}
                 {!stageVisibleNoVideo && (
-                  <span className="text-[9px] font-bold tracking-widest uppercase whitespace-nowrap transition-colors duration-300"
-                    style={{ color: diamondVideo ? "#A5D7E8" : "rgba(165,215,232,0.6)" }}>
-                    {diamondVideo ? diamondVideo.label : "Watch Journey"}
-                  </span>
+                  <div className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-semibold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_16px_rgba(165,215,232,0.3)] ${diamondVideo ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
+                    {/* Spinning gradient border */}
+                    <span className="absolute inset-0 rounded-lg animate-spin pointer-events-none" style={{
+                      animationDuration: "3s",
+                      background: "conic-gradient(from 0deg,#A5D7E8,#576CBC,#A5D7E8,#576CBC,#A5D7E8)",
+                      padding: "1.5px",
+                      WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                      WebkitMaskComposite: "xor",
+                      maskComposite: "exclude",
+                      opacity: 0.8,
+                    }} />
+                    {/* Fill */}
+                    <span className="absolute inset-[1.5px] rounded-[6px] bg-[#0B1526]/90 backdrop-blur-sm" />
+                    {/* Content */}
+                    <span className="relative z-10 flex items-center gap-1.5 text-[#A5D7E8] whitespace-nowrap">
+                      <svg className="w-3 h-3 shrink-0 ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      {diamondVideo ? diamondVideo.label : "Watch Journey"}
+                    </span>
+                  </div>
                 )}
               </button>
             ))}
