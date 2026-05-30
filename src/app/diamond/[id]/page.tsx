@@ -163,7 +163,12 @@ export default function DiamondJourneyPage() {
       if (!nodes.length) return;
       let i = 0;
       const scrollNext = () => {
-        if (stopped || i >= nodes.length) return;
+        if (stopped) return;
+        if (i >= nodes.length) {
+          // All stages done — show journey complete popup
+          timeoutId = setTimeout(() => setShowJourneyToast(true), 1500);
+          return;
+        }
         nodes[i].scrollIntoView({ behavior: "smooth", block: "center" });
         i++;
         timeoutId = setTimeout(scrollNext, 4000);
