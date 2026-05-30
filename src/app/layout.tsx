@@ -23,28 +23,54 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://traceon.click2pdf.in"),
   title: {
-    default: "Traceon — Diamond Journey Tracking",
-    template: "%s | Traceon",
+    default: "Traceon — Blockchain Diamond Journey Tracking",
+    template: "%s | Traceon DiamondDNA",
   },
   description:
-    "From Earth to Eternity — Every Diamond Has a Story. Track your diamond's complete journey across 14 manufacturing stages with Traceon.",
+    "From Earth to Eternity — Every Diamond Has a Story. Track your diamond's complete journey across 14 manufacturing stages with Traceon's cryptographic blockchain ledger.",
   manifest: "/manifest.json",
+  alternates: {
+    canonical: "/",
+  },
   keywords: [
     "diamond tracking",
     "DiamondDNA",
     "diamond journey",
     "diamond traceability",
-    "blockchain diamond",
-    "Traceon",
+    "blockchain diamond ledger",
+    "Traceon Ateliers",
+    "ethical diamond sourcing",
+    "conflict-free diamond registry",
+    "diamond finger print",
+    "Traceon tracking"
   ],
   authors: [{ name: "DiamondDNA" }],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   openGraph: {
-    title: "Traceon — Diamond Journey Tracking",
+    title: "Traceon — Blockchain Diamond Journey Tracking",
     description:
-      "From Earth to Eternity — Every Diamond Has a Story. Full diamond traceability powered by Traceon.",
+      "From Earth to Eternity — Every Diamond Has a Story. Full cryptographic diamond traceability powered by Traceon Ateliers.",
     siteName: "Traceon",
     type: "website",
+    url: "https://traceon.click2pdf.in",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Traceon — Blockchain Diamond Journey Tracking",
+    description: "Cryptographically trace your diamond's journey across 14 master stages from earth to eternity.",
   },
 };
 
