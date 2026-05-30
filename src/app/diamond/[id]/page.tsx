@@ -44,7 +44,7 @@ export default function DiamondJourneyPage() {
   const [showJourneyToast, setShowJourneyToast] = useState(false);
   const [toastDismissed, setToastDismissed] = useState(false);
   const [visibleStageIdx, setVisibleStageIdx] = useState<number>(-1);
-  const [activeStageVideo, setActiveStageVideo] = useState<{ url: string; label: string } | null>(null);
+  const [activeStageVideo, setActiveStageVideo] = useState<{ url: string; label: string; type?: "video" | "360" } | null>(null);
   const journeyVideoRef = useRef<HTMLVideoElement>(null);
   const stageVideoRef = useRef<HTMLVideoElement>(null);
   const timelineEndRef = useRef<HTMLDivElement>(null);
@@ -72,24 +72,29 @@ export default function DiamondJourneyPage() {
     return () => obs.disconnect();
   }, [isLoading, diamond, toastDismissed]);
 
-  // Compute stage video for the currently visible stage (derived value)
+  // Compute stage media for the currently visible stage (derived value)
   const diamondVideo = (() => {
     if (!diamond || visibleStageIdx < 0) return null;
     const stageNum = stages[visibleStageIdx]?.number;
     if (!stageNum) return null;
     const v360 = diamond.stage5?.video360Url;
+    const yehuda = (diamond.stage6 as any)?.inclusionMap?.yehuda360Url as string | null | undefined;
     switch (stageNum) {
-      case 5:  return v360 ? { url: normalizeMediaUrl(v360), label: "360 View" } : null;
-      case 6:  return v360 ? { url: normalizeMediaUrl(v360), label: "Planning Video" } : null;
-      case 10: return { url: VIDEOS.laser,    label: "Laser & Sawing" };
-      case 11: return { url: VIDEOS.bruting,  label: "Bruting Process" };
-      case 12: return { url: VIDEOS.polishing, label: "Polishing Process" };
-      case 13: return { url: VIDEOS.grading,  label: "Grading Process" };
+      case 5: {
+        // Prefer yehuda360 iframe; fall back to planning video
+        if (yehuda) return { url: normalizeMediaUrl(yehuda), label: "360 Yehuda View", type: "360" as const };
+        return v360 ? { url: normalizeMediaUrl(v360), label: "360 View", type: "video" as const } : null;
+      }
+      case 6:  return v360 ? { url: normalizeMediaUrl(v360), label: "Planning Video", type: "video" as const } : null;
+      case 10: return { url: VIDEOS.laser,    label: "Laser & Sawing",   type: "video" as const };
+      case 11: return { url: VIDEOS.bruting,  label: "Bruting Process",  type: "video" as const };
+      case 12: return { url: VIDEOS.polishing, label: "Polishing Process", type: "video" as const };
+      case 13: return { url: VIDEOS.grading,  label: "Grading Process",  type: "video" as const };
       case 14: {
         const fv = diamond.stage14?.final360Video;
-        return fv ? { url: normalizeMediaUrl(fv), label: "Final Diamond" } : null;
+        return fv ? { url: normalizeMediaUrl(fv), label: "Final Diamond", type: "video" as const } : null;
       }
-      default: return null;  // stages 1,2,3,7 — no video
+      default: return null;
     }
   })();
 
@@ -755,14 +760,22 @@ export default function DiamondJourneyPage() {
                 </svg>
               </button>
             </div>
-            <video
-              ref={stageVideoRef}
-              src={activeStageVideo.url}
-              className="w-full aspect-video"
-              controls
-              autoPlay
-              playsInline
-            />
+            {activeStageVideo.type === "360" ? (
+              <iframe
+                src={activeStageVideo.url}
+                className="w-full aspect-video border-0"
+                allow="fullscreen"
+              />
+            ) : (
+              <video
+                ref={stageVideoRef}
+                src={activeStageVideo.url}
+                className="w-full aspect-video"
+                controls
+                autoPlay
+                playsInline
+              />
+            )}
           </div>
         </div>
       )}
