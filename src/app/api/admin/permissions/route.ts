@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
 
       await tx.auditLog.create({
         data: {
-          userId: payload.userId || payload.id,
+          userId: payload.userId,
           action: "PERMISSION_CHANGE",
           entityType: "field_permission",
           newValue: { details: "Updated stage permission matrix" },

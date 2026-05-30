@@ -78,7 +78,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       // Create audit log
       await tx.auditLog.create({
         data: {
-          userId: payload.id,
+          userId: payload.userId,
           action: "UPDATE_PERMISSIONS",
           entityType: "user",
           entityId: employeeId,

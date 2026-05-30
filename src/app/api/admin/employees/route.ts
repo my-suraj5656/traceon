@@ -9,7 +9,7 @@ async function verifyAdmin(request: NextRequest) {
   if (!token) return null;
   try {
     const payload = await verifyAccessToken(token);
-    if (payload.role !== "ADMIN" && payload.role !== "SUPER_ADMIN") return null;
+    if (!payload || (payload.role !== "ADMIN" && payload.role !== "SUPER_ADMIN")) return null;
     return payload;
   } catch {
     return null;

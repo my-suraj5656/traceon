@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       // Log the action
       await tx.auditLog.create({
         data: {
-          userId: payload.id,
+          userId: payload.userId,
           action: "CREATE",
           entityType: "diamond",
           entityId: newDiamond.id,
