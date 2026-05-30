@@ -50,8 +50,8 @@ export const IMAGES = {
   roughDiamondsPile:  `${CDN}/image/upload/traceon/images/rough_diamonds_pile.jpg`,
   diamonds: {
     "RGH-26-011": {
-      rough:    `${CDN}/image/upload/v1780142824/traceon/diamonds/RGH-26-011/img12.jpg`,
-      polished: `${CDN}/image/upload/v1780142823/traceon/diamonds/RGH-26-011/img11.jpg`,
+      rough:    `${CDN}/image/upload/v1780142823/traceon/diamonds/RGH-26-011/img11.jpg`,
+      polished: `${CDN}/image/upload/v1780142824/traceon/diamonds/RGH-26-011/img12.jpg`,
     },
     "RGH-26-012": {
       rough:    `${CDN}/image/upload/traceon/diamonds/RGH-26-012/rough.png`,
