@@ -496,10 +496,10 @@ export default function DiamondJourneyPage() {
                 }
               }
 
-              // Stage 5: rename video360Url → view360Url so card shows "360 View" not "Planning Video"
+              // Stage 5: remove planning video, show yehuda 360 iframe from stage 6
               if (stage.number === 5 && displayData) {
-                const { video360Url, ...rest5 } = displayData as Record<string, unknown>;
-                displayData = video360Url ? { ...rest5, view360Url: video360Url } : rest5;
+                const { video360Url: _v, ...rest5 } = displayData;
+                displayData = rest5;
                 const im = (diamond.stage6 as any)?.inclusionMap as Record<string, unknown> | null;
                 if (im?.yehuda360Url) {
                   displayData = { ...displayData, yehuda360Url: im.yehuda360Url };
