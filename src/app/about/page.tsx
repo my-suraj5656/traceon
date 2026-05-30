@@ -13,6 +13,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import ParticleField from "@/components/shared/particle-field";
+import Footer from "@/components/shared/footer";
 
 const values = [
   { icon: Shield, title: "Trust", desc: "Every data point is audited, hashed, and blockchain-ready." },
@@ -91,11 +92,7 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      <footer className="relative z-10 border-t border-border px-6 md:px-12 py-8 text-center">
-        <p className="text-xs text-muted">
-          Traceon · © {new Date().getFullYear()} · All Rights Reserved
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }

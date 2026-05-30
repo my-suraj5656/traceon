@@ -2,6 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import { IMAGES } from "@/lib/media";
+import Footer from "@/components/shared/footer";
 import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -757,18 +758,7 @@ export default function BlockchainPage() {
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="relative z-10 bg-[#1e2638]/40 border-t border-white/5 px-6 md:px-12 py-6">
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs text-white/40">
-            <Gem className="w-3 h-3 text-sky-blue" />
-            TraceOn Ateliers · © {new Date().getFullYear()}
-          </div>
-          <Link href="/search" className="text-xs text-white/40 hover:text-white transition-colors">
-            Verify Another Gemstone
-          </Link>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
