@@ -668,112 +668,136 @@ export default function DiamondJourneyPage() {
 
       {/* ── PRINT-ONLY CERTIFICATE ─────────────────────────── */}
       <div className="print-certificate">
-        {/* Header */}
-        <div className="cert-header">
-          <div className="cert-logo">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" strokeWidth="1.5">
-              <polygon points="12,2 22,12 12,22 2,12" />
-              <polygon points="12,6 18,12 12,18 6,12" />
-              <polygon points="12,9 15,12 12,15 9,12" />
-            </svg>
-            <span className="cert-brand">TraceOn</span>
-          </div>
-          <div className="cert-title-block">
-            <h1 className="cert-title">Diamond Grading Certificate</h1>
-            <p className="cert-subtitle">Blockchain-Authenticated · Tamper-Evident</p>
-          </div>
-          <div className="cert-id-block">
-            <p className="cert-id-label">DiamondDNA ID</p>
-            <p className="cert-id-value">{diamond.diamonddnaId}</p>
-          </div>
-        </div>
+        <div className="cert-page">
 
-        <div className="cert-divider" />
+          {/* Top border accent */}
+          <div className="cert-top-accent" />
 
-        {/* Two-column body */}
-        <div className="cert-body">
-          {/* Left — Diamond Details */}
-          <div className="cert-section">
-            <h2 className="cert-section-title">Diamond Details</h2>
-            <table className="cert-table">
-              <tbody>
-                {diamond.stage1?.originCountry && (
-                  <tr><td>Origin</td><td>{diamond.stage1.originCountry}</td></tr>
-                )}
-                {diamond.stage1?.roughWeight && (
-                  <tr><td>Rough Weight</td><td>{diamond.stage1.roughWeight} ct</td></tr>
-                )}
-                {(diamond.stage12?.polishWeight || diamond.stage13?.finalCarat) && (
-                  <tr><td>Polish Weight</td><td>{diamond.stage12?.polishWeight || diamond.stage13?.finalCarat} ct</td></tr>
-                )}
-                {diamond.stage3?.packetBarcode && (
-                  <tr><td>Packet ID</td><td>{diamond.stage3.packetBarcode}</td></tr>
-                )}
-                <tr><td>Status</td><td>{diamond.status}</td></tr>
-              </tbody>
-            </table>
+          {/* Header */}
+          <div className="cert-header">
+            <div className="cert-logo">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#1a3a5c" strokeWidth="1.5">
+                <polygon points="12,2 22,12 12,22 2,12" />
+                <polygon points="12,6 18,12 12,18 6,12" />
+                <polygon points="12,9 15,12 12,15 9,12" />
+              </svg>
+              <span className="cert-brand">TraceOn</span>
+            </div>
+            <div className="cert-title-block">
+              <h1 className="cert-title">Diamond Grading Certificate</h1>
+              <p className="cert-subtitle">Blockchain-Authenticated · Tamper-Evident · Immutable</p>
+            </div>
+            <div className="cert-id-block">
+              <p className="cert-id-label">DiamondDNA ID</p>
+              <p className="cert-id-value">{diamond.diamonddnaId}</p>
+              <p className="cert-id-label" style={{marginTop:'6px'}}>Status</p>
+              <p className="cert-id-value" style={{fontSize:'11px'}}>{diamond.status}</p>
+            </div>
           </div>
 
-          {/* Right — Grading */}
-          <div className="cert-section">
-            <h2 className="cert-section-title">Grading Report</h2>
-            {diamond.stage13 ? (
+          <div className="cert-divider-thick" />
+
+          {/* Grading highlight band */}
+          {diamond.stage13 && (
+            <div className="cert-grades-band">
+              {[
+                { label: "Carat", value: `${diamond.stage13.finalCarat} ct` },
+                { label: "Color", value: diamond.stage13.finalColor },
+                { label: "Clarity", value: diamond.stage13.finalClarity },
+                { label: "Cut", value: diamond.stage13.cutGrade },
+                { label: "Polish", value: diamond.stage13.polishGrade },
+                { label: "Symmetry", value: diamond.stage13.symmetryGrade },
+              ].map(({ label, value }) => (
+                <div key={label} className="cert-grade-item">
+                  <span className="cert-grade-val">{value ?? "—"}</span>
+                  <span className="cert-grade-lbl">{label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="cert-divider" />
+
+          {/* Two-column details */}
+          <div className="cert-body">
+            <div className="cert-section">
+              <h2 className="cert-section-title">Diamond Details</h2>
               <table className="cert-table">
                 <tbody>
-                  <tr><td>Carat</td><td>{diamond.stage13.finalCarat} ct</td></tr>
-                  <tr><td>Color</td><td>{diamond.stage13.finalColor}</td></tr>
-                  <tr><td>Clarity</td><td>{diamond.stage13.finalClarity}</td></tr>
-                  <tr><td>Cut</td><td>{diamond.stage13.cutGrade}</td></tr>
-                  <tr><td>Polish</td><td>{diamond.stage13.polishGrade}</td></tr>
-                  <tr><td>Symmetry</td><td>{diamond.stage13.symmetryGrade}</td></tr>
+                  {diamond.stage1?.originCountry && <tr><td>Origin Country</td><td>{diamond.stage1.originCountry}</td></tr>}
+                  {diamond.stage1?.roughWeight    && <tr><td>Rough Weight</td><td>{diamond.stage1.roughWeight} ct</td></tr>}
+                  {(diamond.stage12?.polishWeight || diamond.stage13?.finalCarat) && (
+                    <tr><td>Polish Weight</td><td>{diamond.stage12?.polishWeight || diamond.stage13?.finalCarat} ct</td></tr>
+                  )}
+                  {diamond.stage3?.packetBarcode  && <tr><td>Packet ID</td><td>{diamond.stage3.packetBarcode}</td></tr>}
+                  {diamond.stage1?.pcsCount != null && <tr><td>Pieces</td><td>{diamond.stage1.pcsCount}</td></tr>}
                 </tbody>
               </table>
-            ) : (
-              <p className="cert-pending">Grading not yet completed</p>
-            )}
-          </div>
-        </div>
+            </div>
 
-        {/* Blockchain Record */}
-        {(diamond.stage7?.fingerprintHash || diamond.stage7?.verificationSignature) && (
-          <>
-            <div className="cert-divider" />
-            <div className="cert-blockchain">
-              <h2 className="cert-section-title">Blockchain Record</h2>
+            <div className="cert-section">
+              <h2 className="cert-section-title">Certificate Details</h2>
+              <table className="cert-table">
+                <tbody>
+                  <tr><td>Issuing Authority</td><td>TraceOn Ateliers</td></tr>
+                  <tr><td>Certificate Type</td><td>Blockchain Grading</td></tr>
+                  <tr><td>Date Issued</td><td>{new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}</td></tr>
+                  <tr><td>Verification URL</td><td>traceon.click2pdf.in</td></tr>
+                  {diamond.stage7?.diamonddnaId && <tr><td>DiaDNA Ref</td><td>{diamond.stage7.diamonddnaId}</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="cert-divider" />
+
+          {/* Blockchain Record */}
+          <div className="cert-blockchain">
+            <h2 className="cert-section-title">Blockchain Security Record</h2>
+            <div className="cert-hash-grid">
               {diamond.stage7?.fingerprintHash && (
                 <div className="cert-hash-row">
-                  <span>SHA-256 Fingerprint</span>
+                  <span className="cert-hash-label">SHA-256 Fingerprint</span>
                   <span className="cert-hash">{diamond.stage7.fingerprintHash}</span>
                 </div>
               )}
               {diamond.stage7?.verificationSignature && (
                 <div className="cert-hash-row">
-                  <span>Verification Sig</span>
+                  <span className="cert-hash-label">Verification Signature</span>
                   <span className="cert-hash">{diamond.stage7.verificationSignature}</span>
                 </div>
               )}
+              {!diamond.stage7?.fingerprintHash && !diamond.stage7?.verificationSignature && (
+                <p className="cert-pending">Blockchain record pending DiaDNA stage completion.</p>
+              )}
             </div>
-          </>
-        )}
+          </div>
 
-        <div className="cert-divider" />
+          {/* Footer */}
+          <div className="cert-footer">
+            <div className="cert-sig-block">
+              <div className="cert-sig-line" />
+              <p className="cert-sig-title">Authorised Signatory</p>
+              <p className="cert-sig-sub">TraceOn Ateliers</p>
+            </div>
+            <div className="cert-footer-center">
+              <div className="cert-watermark-diamond">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#c8d9e8" strokeWidth="1">
+                  <polygon points="12,2 22,12 12,22 2,12" />
+                  <polygon points="12,6 18,12 12,18 6,12" />
+                </svg>
+              </div>
+              <p>This certificate is digitally generated and blockchain-verified by TraceOn.</p>
+              <p>Authenticity can be verified at <strong>traceon.click2pdf.in</strong></p>
+            </div>
+            <div className="cert-sig-block">
+              <div className="cert-sig-line" />
+              <p className="cert-sig-title">Date of Issue</p>
+              <p className="cert-sig-sub">{new Date().toLocaleDateString("en-US",{year:"numeric",month:"long",day:"numeric"})}</p>
+            </div>
+          </div>
 
-        {/* Footer */}
-        <div className="cert-footer">
-          <div className="cert-sig-block">
-            <div className="cert-sig-line" />
-            <p>Authorised Signatory</p>
-            <p>TraceOn Ateliers</p>
-          </div>
-          <div className="cert-footer-center">
-            <p>This certificate is generated by the TraceOn blockchain tracking system.</p>
-            <p>Verify authenticity at traceon.click2pdf.in</p>
-          </div>
-          <div className="cert-sig-block">
-            <div className="cert-sig-line" />
-            <p>Date Issued</p>
-            <p>{new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
-          </div>
+          <div className="cert-bottom-accent" />
         </div>
       </div>
     </>
