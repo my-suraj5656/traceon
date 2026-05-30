@@ -49,6 +49,10 @@ export const IMAGES = {
   realisticDiamond:   `${CDN}/image/upload/traceon/images/realistic_diamond.jpg`,
   roughDiamondsPile:  `${CDN}/image/upload/traceon/images/rough_diamonds_pile.jpg`,
   diamonds: {
+    "TN4003215": {
+      rough:    `${CDN}/image/upload/v1780142823/traceon/diamonds/RGH-26-011/img11.jpg`,
+      polished: `${CDN}/image/upload/v1780142824/traceon/diamonds/RGH-26-011/img12.jpg`,
+    },
     "RGH-26-011": {
       rough:    `${CDN}/image/upload/v1780142823/traceon/diamonds/RGH-26-011/img11.jpg`,
       polished: `${CDN}/image/upload/v1780142824/traceon/diamonds/RGH-26-011/img12.jpg`,
