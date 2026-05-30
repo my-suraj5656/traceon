@@ -1,0 +1,58 @@
+const CDN = "https://res.cloudinary.com/dgqocqvf6";
+
+export const VIDEOS = {
+  hero:           `${CDN}/video/upload/traceon/videos/3rdd.mp4`,
+  display:        `${CDN}/video/upload/traceon/videos/display.mp4`,
+  fallingDiamonds:`${CDN}/video/upload/traceon/videos/falling-diamonds.mp4`,
+  journey:        `${CDN}/video/upload/traceon/journey/full-journey.mp4`,
+  laser:          `${CDN}/video/upload/v1780057399/traceon/laser/laser.mp4`,
+  bruting:        `${CDN}/video/upload/traceon/bruting/bruting.mp4`,
+  polishing:      `${CDN}/video/upload/v1780120905/traceon/polishing/polishing.mp4`,
+  grading:        `${CDN}/video/upload/v1780113456/traceon/grading/grading.mp4`,
+  planning: {
+    "ABM834-1": `${CDN}/video/upload/traceon/planning-videos/ABM834-1.mp4`,
+    "ABT077-1": `${CDN}/video/upload/traceon/planning-videos/ABT077-1.mp4`,
+    "ABT913-1": `${CDN}/video/upload/traceon/planning-videos/ABT913-1.mp4`,
+    "ABU068-1": `${CDN}/video/upload/traceon/planning-videos/ABU068-1.mp4`,
+    "ABY615-1": `${CDN}/video/upload/traceon/planning-videos/ABY615-1.mp4`,
+    "ABY834-1": `${CDN}/video/upload/traceon/planning-videos/ABY834-1.mp4`,
+  },
+  final: {
+    "ABM834-1": `${CDN}/video/upload/traceon/videos/ABM834-1.mp4`,
+    "ABS441-1": `${CDN}/video/upload/traceon/videos/ABS441-1.mp4`,
+    "ABT077-1": `${CDN}/video/upload/traceon/videos/ABT077-1.mp4`,
+    "ABT913-1": `${CDN}/video/upload/traceon/videos/ABT913-1.mp4`,
+    "ABU068-1": `${CDN}/video/upload/traceon/videos/ABU068-1.mp4`,
+    "ABY615-1": `${CDN}/video/upload/traceon/videos/ABY615-1.mp4`,
+    "ABY664-1": `${CDN}/video/upload/traceon/videos/ABY664-1.mp4`,
+  },
+} as const;
+
+export const IMAGES = {
+  transparentDiamond: `${CDN}/image/upload/traceon/images/transparent_diamond.png`,
+  lineArtDiamond:     `${CDN}/image/upload/traceon/images/line_art_diamond.jpg`,
+  realisticDiamond:   `${CDN}/image/upload/traceon/images/realistic_diamond.jpg`,
+  roughDiamondsPile:  `${CDN}/image/upload/traceon/images/rough_diamonds_pile.jpg`,
+  diamonds: {
+    "RGH-26-011": {
+      rough:    `${CDN}/image/upload/traceon/diamonds/RGH-26-011/rough.png`,
+      polished: `${CDN}/image/upload/traceon/diamonds/RGH-26-011/polished.png`,
+    },
+    "RGH-26-012": {
+      rough:    `${CDN}/image/upload/traceon/diamonds/RGH-26-012/rough.png`,
+      polished: `${CDN}/image/upload/traceon/diamonds/RGH-26-012/polished.png`,
+    },
+    "RGH-26-013": {
+      rough:    `${CDN}/image/upload/traceon/diamonds/RGH-26-013/rough.png`,
+      polished: `${CDN}/image/upload/traceon/diamonds/RGH-26-013/polished.png`,
+    },
+    "RGH-26-014": {
+      rough:    `${CDN}/image/upload/traceon/diamonds/RGH-26-014/rough.png`,
+      polished: `${CDN}/image/upload/traceon/diamonds/RGH-26-014/polished.png`,
+    },
+    "RGH-26-015": {
+      rough:    `${CDN}/image/upload/traceon/diamonds/RGH-26-015/rough.png`,
+      polished: `${CDN}/image/upload/traceon/diamonds/RGH-26-015/polished.png`,
+    },
+  },
+} as const;

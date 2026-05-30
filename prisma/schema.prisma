@@ -1,0 +1,468 @@
+// ═══════════════════════════════════════════════════════════
+// TRACEON — Database Schema
+// Diamond Journey Tracking Platform by DiamondDNA
+// PostgreSQL 16 via Prisma ORM
+// ═══════════════════════════════════════════════════════════
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── Enums ────────────────────────────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EMPLOYEE
+}
+
+enum AccountStatus {
+  ACTIVE
+  SUSPENDED
+  LOCKED
+  PENDING_PASSWORD_CHANGE
+}
+
+enum DiamondStatus {
+  IN_PROGRESS
+  COMPLETED
+  FLAGGED
+  ARCHIVED
+}
+
+enum QCStatus {
+  PASS
+  FAIL
+  PENDING
+}
+
+enum NotificationType {
+  STAGE_COMPLETED
+  DATA_FLAGGED
+  ACCOUNT_CREATED
+  PERMISSION_CHANGED
+  SYSTEM_ALERT
+  FRAUD_ALERT
+}
+
+// ── Users ────────────────────────────────────────────────
+
+model User {
+  id            String        @id @default(uuid())
+  email         String        @unique
+  passwordHash  String        @map("password_hash")
+  role          Role
+  fullName      String        @map("full_name")
+  contactNumber String?       @map("contact_number")
+  profilePhoto  String?       @map("profile_photo")
+  status        AccountStatus @default(ACTIVE)
+  roleLabel     String?       @map("role_label") // Custom label like "Senior Cutter"
+
+  // MFA (Super Admin only)
+  totpSecret    String?       @map("totp_secret")
+  mfaEnabled    Boolean       @default(false) @map("mfa_enabled")
+
+  // Account lockout
+  failedLoginAttempts Int       @default(0) @map("failed_login_attempts")
+  lockedUntil         DateTime? @map("locked_until")
+
+  // Relationships
+  createdById   String?       @map("created_by_id")
+  createdBy     User?         @relation("UserCreator", fields: [createdById], references: [id])
+  createdUsers  User[]        @relation("UserCreator")
+
+  // First-time password change
+  mustChangePassword Boolean  @default(true) @map("must_change_password")
+
+  // Tokens
+  refreshTokens RefreshToken[]
+
+  // Related data
+  fieldPermissions FieldPermission[]
+  auditLogs        AuditLog[]
+  notifications    Notification[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique @map("token_hash")
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("refresh_tokens")
+}
+
+// ── Diamonds ─────────────────────────────────────────────
+
+model Diamond {
+  id            String        @id @default(uuid())
+  roughId       String        @unique @map("rough_id")
+  diamonddnaId  String?       @unique @map("diamonddna_id")
+  currentStage  Int           @default(1) @map("current_stage")
+  status        DiamondStatus @default(IN_PROGRESS)
+
+  // Stage data (1:1 relations)
+  stage1  Stage1?
+  stage2  Stage2?
+  stage3  Stage3?
+  stage4  Stage4?
+  stage5  Stage5?
+  stage6  Stage6?
+  stage7  Stage7?
+  stage8  Stage8?
+  stage9  Stage9?
+  stage10 Stage10?
+  stage11 Stage11?
+  stage12 Stage12?
+  stage13 Stage13?
+  stage14 Stage14?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([roughId])
+  @@index([diamonddnaId])
+  @@index([currentStage])
+  @@index([status])
+  @@map("diamonds")
+}
+
+// ── Stage 1: Rough Diamond Entry ─────────────────────────
+
+model Stage1 {
+  id             String   @id @default(uuid())
+  diamondId      String   @unique @map("diamond_id")
+  diamond        Diamond  @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  roughId        String   @map("rough_id")
+  sourceLotId    String   @map("source_lot_id")
+  originCountry  String   @map("origin_country")
+  roughWeight    Decimal  @map("rough_weight") @db.Decimal(10, 4)
+  pcsCount       Int      @map("pcs_count")
+  entryTimestamp DateTime @default(now()) @map("entry_timestamp")
+
+  completedAt    DateTime? @map("completed_at")
+  completedBy    String?   @map("completed_by")
+
+  @@map("stage_1")
+}
+
+// ── Stage 2: Rough Assort & Estimation ───────────────────
+
+model Stage2 {
+  id                    String  @id @default(uuid())
+  diamondId             String  @unique @map("diamond_id")
+  diamond               Diamond @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  estimatedShape        String? @map("estimated_shape")
+  estimatedPolishWeight Decimal? @map("estimated_polish_weight") @db.Decimal(10, 4)
+  clarityEstimate       String? @map("clarity_estimate")
+  colorEstimate         String? @map("color_estimate")
+
+  completedAt           DateTime? @map("completed_at")
+  completedBy           String?   @map("completed_by")
+
+  @@map("stage_2")
+}
+
+// ── Stage 3: Packet Creation ─────────────────────────────
+
+model Stage3 {
+  id              String   @id @default(uuid())
+  diamondId       String   @unique @map("diamond_id")
+  diamond         Diamond  @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  packetId        String   @unique @map("packet_id") @default(uuid())
+  packetBarcode   String?  @unique @map("packet_barcode")
+  packetWeight    Decimal? @map("packet_weight") @db.Decimal(10, 4)
+  packetTimestamp DateTime @default(now()) @map("packet_timestamp")
+
+  completedAt     DateTime? @map("completed_at")
+  completedBy     String?   @map("completed_by")
+
+  @@map("stage_3")
+}
+
+// ── Stage 4: Barcode Labeling ────────────────────────────
+
+model Stage4 {
+  id           String  @id @default(uuid())
+  diamondId    String  @unique @map("diamond_id")
+  diamond      Diamond @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  barcodeUuid  String? @unique @map("barcode_uuid") @default(uuid())
+  scanCount    Int     @default(0) @map("scan_count")
+
+  completedAt  DateTime? @map("completed_at")
+  completedBy  String?   @map("completed_by")
+
+  @@map("stage_4")
+}
+
+// ── Stage 5: Digital Imaging ─────────────────────────────
+
+model Stage5 {
+  id               String  @id @default(uuid())
+  diamondId        String  @unique @map("diamond_id")
+  diamond          Diamond @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  rawImageUrls     Json?   @map("raw_image_urls")     // JSON array of URLs
+  inclusionImageUrls Json? @map("inclusion_image_urls") // JSON array of URLs
+  video360Url      String? @map("video_360_url")
+  imageHash        String? @map("image_hash")          // SHA-256
+  scanTimestamp    DateTime? @map("scan_timestamp")
+
+  completedAt      DateTime? @map("completed_at")
+  completedBy      String?   @map("completed_by")
+
+  @@map("stage_5")
+}
+
+// ── Stage 6: X-Ray / Yehuda / Spectrum Analysis ─────────
+
+model Stage6 {
+  id                 String  @id @default(uuid())
+  diamondId          String  @unique @map("diamond_id")
+  diamond            Diamond @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  fluorescenceData   Json?   @map("fluorescence_data")
+  inclusionMap       Json?   @map("inclusion_map")
+  treatmentDetection Boolean? @map("treatment_detection")
+
+  completedAt        DateTime? @map("completed_at")
+  completedBy        String?   @map("completed_by")
+
+  @@map("stage_6")
+}
+
+// ── Stage 7: DiamondDNA Fingerprint ──────────────────────
+
+model Stage7 {
+  id                    String  @id @default(uuid())
+  diamondId             String  @unique @map("diamond_id")
+  diamond               Diamond @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  diamonddnaId          String? @unique @map("diamonddna_id")
+  fingerprintHash       String? @map("fingerprint_hash")
+  imageEmbeddings       Json?   @map("image_embeddings")
+  featureVectors        Json?   @map("feature_vectors")
+  verificationSignature String? @map("verification_signature")
+
+  completedAt           DateTime? @map("completed_at")
+  completedBy           String?   @map("completed_by")
+
+  @@map("stage_7")
+}
+
+// ── Stage 8: Virtual Planning ────────────────────────────
+
+model Stage8 {
+  id         String  @id @default(uuid())
+  diamondId  String  @unique @map("diamond_id")
+  diamond    Diamond @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  galaxyFile String? @map("galaxy_file")
+  sarinFile  String? @map("sarin_file")
+  cadModel   Json?   @map("cad_model")
+
+  completedAt DateTime? @map("completed_at")
+  completedBy String?   @map("completed_by")
+
+  @@map("stage_8")
+}
+
+// ── Stage 9: Physical Match Verification ─────────────────
+
+model Stage9 {
+  id                      String    @id @default(uuid())
+  diamondId               String    @unique @map("diamond_id")
+  diamond                 Diamond   @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  verificationMatchScore  Decimal?  @map("verification_match_score") @db.Decimal(5, 4)
+  mismatchFlag            Boolean   @default(false) @map("mismatch_flag")
+  qcStatus                QCStatus  @default(PENDING) @map("qc_status")
+  verificationTimestamp   DateTime? @map("verification_timestamp")
+
+  completedAt             DateTime? @map("completed_at")
+  completedBy             String?   @map("completed_by")
+
+  @@map("stage_9")
+}
+
+// ── Stage 10: Laser & Sawing ─────────────────────────────
+
+model Stage10 {
+  id             String  @id @default(uuid())
+  diamondId      String  @unique @map("diamond_id")
+  diamond        Diamond @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  laserMachineId String? @map("laser_machine_id")
+  sawPattern     Json?   @map("saw_pattern")
+  recutHistory   Json?   @map("recut_history")
+
+  completedAt    DateTime? @map("completed_at")
+  completedBy    String?   @map("completed_by")
+
+  @@map("stage_10")
+}
+
+// ── Stage 11: Geometry / MEC / Helium ────────────────────
+
+model Stage11 {
+  id              String  @id @default(uuid())
+  diamondId       String  @unique @map("diamond_id")
+  diamond         Diamond @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  geometryModel   Json?   @map("geometry_model")
+  symmetryData    Json?   @map("symmetry_data")
+  angleParameters Json?   @map("angle_parameters")
+
+  completedAt     DateTime? @map("completed_at")
+  completedBy     String?   @map("completed_by")
+
+  @@map("stage_11")
+}
+
+// ── Stage 12: Polishing ──────────────────────────────────
+
+model Stage12 {
+  id                 String   @id @default(uuid())
+  diamondId          String   @unique @map("diamond_id")
+  diamond            Diamond  @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  polishWeight       Decimal? @map("polish_weight") @db.Decimal(10, 4)
+  shape              String?
+  polishingTimestamp  DateTime? @map("polishing_timestamp")
+
+  completedAt        DateTime? @map("completed_at")
+  completedBy        String?   @map("completed_by")
+
+  @@map("stage_12")
+}
+
+// ── Stage 13: Final Grading ──────────────────────────────
+
+model Stage13 {
+  id            String  @id @default(uuid())
+  diamondId     String  @unique @map("diamond_id")
+  diamond       Diamond @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  finalCarat      Decimal? @map("final_carat") @db.Decimal(10, 4)
+  finalColor      String?  @map("final_color")
+  finalClarity    String?  @map("final_clarity")
+  cutGrade        String?  @map("cut_grade")
+  polishGrade     String?  @map("polish_grade")
+  symmetryGrade   String?  @map("symmetry_grade")
+  gradingVideoUrl String?  @map("grading_video_url")
+
+  completedAt   DateTime? @map("completed_at")
+  completedBy   String?   @map("completed_by")
+
+  @@map("stage_13")
+}
+
+// ── Stage 14: Final Photo / Video ────────────────────────
+
+model Stage14 {
+  id            String  @id @default(uuid())
+  diamondId     String  @unique @map("diamond_id")
+  diamond       Diamond @relation(fields: [diamondId], references: [id], onDelete: Cascade)
+
+  finalImageSet Json?   @map("final_image_set") // JSON array of URLs
+  final360Video String? @map("final_360_video")
+  mediaHash     String? @map("media_hash") // SHA-256
+
+  completedAt   DateTime? @map("completed_at")
+  completedBy   String?   @map("completed_by")
+
+  @@map("stage_14")
+}
+
+// ── Field Permissions ────────────────────────────────────
+
+model FieldPermission {
+  id          String  @id @default(uuid())
+  employeeId  String  @map("employee_id")
+  employee    User    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  stageNumber Int     @map("stage_number") // 1–14
+  fieldName   String  @map("field_name")   // Database field name
+  canView     Boolean @default(false) @map("can_view")
+  canEdit     Boolean @default(false) @map("can_edit")
+
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([employeeId, stageNumber, fieldName])
+  @@index([employeeId])
+  @@index([stageNumber])
+  @@map("field_permissions")
+}
+
+// ── Audit Logs ───────────────────────────────────────────
+
+model AuditLog {
+  id         String   @id @default(uuid())
+  userId     String?  @map("user_id")
+  user       User?    @relation(fields: [userId], references: [id])
+
+  action     String   // CREATE, UPDATE, DELETE, LOGIN, LOGOUT, PERMISSION_CHANGE, etc.
+  entityType String   @map("entity_type") // diamond, user, stage_1, field_permission, etc.
+  entityId   String?  @map("entity_id")
+  oldValue   Json?    @map("old_value")
+  newValue   Json?    @map("new_value")
+  ipAddress  String?  @map("ip_address")
+  userAgent  String?  @map("user_agent")
+
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ── Notifications ────────────────────────────────────────
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String           @map("user_id")
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      NotificationType
+  title     String
+  body      String
+  read      Boolean          @default(false)
+  metadata  Json?            // Additional context (diamondId, stageNumber, etc.)
+
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  @@index([userId, read])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+// ── System Settings ──────────────────────────────────────
+
+model SystemSetting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value Json
+
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("system_settings")
+}

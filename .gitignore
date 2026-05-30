@@ -1,0 +1,68 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files — NEVER commit secrets
+.env
+.env.local
+.env.production
+.env*.local
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+/src/generated/prisma
+
+# seed files
+seed-*.ts
+seed-*.js
+
+# update scripts
+update-*.ts
+update-*.js
+
+# local assets (not needed for deployment)
+/assets
+
+# media files — hosted on Cloudinary
+/public/videos
+/public/planning-videos
+/public/journey
+/public/laser
+/public/bruting
+/public/polishing
+/public/grading
+/public/diamonds
+/public/images
