@@ -4,10 +4,13 @@ const CDN = "https://res.cloudinary.com/dgqocqvf6";
 // Absolute URLs pass through unchanged.
 export function normalizeMediaUrl(url: string): string {
   if (!url) return url;
+  // HTML files (yehuda360 viewers) always served from public/ regardless of stored URL format
+  if (/\.html?$/i.test(url)) {
+    const filename = url.split("/").pop();
+    return `/yehuda360/${filename}`;
+  }
   if (url.startsWith("http://") || url.startsWith("https://")) return url;
   const path = url.startsWith("/") ? url : `/${url}`;
-  // HTML files (yehuda360 viewers) are served from public/ — keep as relative path
-  if (/\.html?$/i.test(path)) return path;
   const isVideo = /\.(mp4|mov|webm|avi|ogg)/i.test(path);
   return `${CDN}/${isVideo ? "video" : "image"}/upload/traceon${path}`;
 }
