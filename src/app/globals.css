@@ -509,25 +509,83 @@ body {
   .hide-desktop { display: none !important; }
 }
 
-/* ── Print Styles (Diamond Journey PDF) ───────────────────── */
+/* ── Print Styles (Diamond Journey Certificate) ───────────── */
 @media print {
-  body {
-    background: white !important;
-    color: #1a1a1a !important;
+  @page { size: A4; margin: 12mm 14mm; }
+
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  body { background: white !important; color: #1a1a1a !important; }
+
+  /* Hide all screen content */
+  body > *,
+  .no-print,
+  nav,
+  .timeline-section,
+  .certificate-section,
+  .particle-field,
+  footer { display: none !important; }
+
+  /* Show only print certificate */
+  .print-certificate {
+    display: block !important;
+    width: 100%;
+    font-family: Georgia, "Times New Roman", serif;
+    color: #1a1a1a;
+    background: white;
   }
 
-  .no-print {
-    display: none !important;
+  /* Header */
+  .cert-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding-bottom: 10px;
   }
+  .cert-logo { display: flex; align-items: center; gap: 8px; }
+  .cert-brand {
+    font-size: 20px; font-weight: 700; letter-spacing: 0.08em;
+    color: #1a3a5c; font-family: Georgia, serif; text-transform: uppercase;
+  }
+  .cert-title-block { text-align: center; }
+  .cert-title {
+    font-size: 20px; font-weight: 700; color: #1a3a5c;
+    letter-spacing: 0.04em; margin: 0; text-transform: uppercase;
+  }
+  .cert-subtitle {
+    font-size: 8px; color: #64748b; letter-spacing: 0.12em;
+    text-transform: uppercase; margin-top: 3px;
+  }
+  .cert-id-block { text-align: right; }
+  .cert-id-label { font-size: 8px; color: #94a3b8; letter-spacing: 0.1em; text-transform: uppercase; margin: 0; }
+  .cert-id-value { font-size: 12px; font-family: "Courier New", monospace; font-weight: 700; color: #1a3a5c; margin: 2px 0 0; }
 
-  .glass, .glass-card {
-    backdrop-filter: none;
-    background: #f8f9fa !important;
-    border: 1px solid #dee2e6 !important;
-    box-shadow: none !important;
-  }
+  /* Divider */
+  .cert-divider { border: none; border-top: 2px solid #1a3a5c; margin: 8px 0; }
 
-  .particle-field {
-    display: none !important;
+  /* Body */
+  .cert-body { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 10px 0; }
+  .cert-section-title {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+    color: #1a3a5c; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin: 0 0 8px;
   }
+  .cert-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .cert-table td { padding: 4px 0; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+  .cert-table td:first-child { color: #64748b; font-size: 9px; text-transform: uppercase; letter-spacing: 0.06em; width: 45%; }
+  .cert-table td:last-child { font-weight: 600; color: #0f172a; font-size: 12px; }
+  .cert-pending { font-size: 10px; color: #94a3b8; font-style: italic; }
+
+  /* Blockchain */
+  .cert-blockchain { padding: 6px 0; }
+  .cert-hash-row { display: flex; gap: 12px; align-items: baseline; padding: 2px 0; font-size: 9px; }
+  .cert-hash-row span:first-child { color: #64748b; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; min-width: 120px; }
+  .cert-hash { font-family: "Courier New", monospace; font-size: 8px; color: #334155; word-break: break-all; }
+
+  /* Footer */
+  .cert-footer { display: flex; justify-content: space-between; align-items: flex-end; padding-top: 10px; gap: 16px; }
+  .cert-sig-block { text-align: center; font-size: 9px; color: #64748b; min-width: 130px; }
+  .cert-sig-block p { margin: 2px 0; }
+  .cert-sig-line { border-top: 1px solid #1a3a5c; margin-bottom: 6px; }
+  .cert-footer-center { text-align: center; font-size: 8px; color: #94a3b8; line-height: 1.6; flex: 1; }
+  .cert-footer-center p { margin: 1px 0; }
 }
