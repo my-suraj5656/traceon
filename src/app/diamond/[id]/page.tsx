@@ -101,6 +101,25 @@ export default function DiamondJourneyPage() {
   // true when a stage is visible but has no video — hide play button entirely
   const stageVisibleNoVideo = visibleStageIdx >= 0 && diamondVideo === null;
 
+  // Animate diamond Y to centre of the currently visible stage card
+  useEffect(() => {
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>(".timeline-node"));
+    const track = document.getElementById("timeline-track");
+    const diamonds = Array.from(document.querySelectorAll<HTMLElement>(".traveling-diamond"));
+    if (!track || !diamonds.length) return;
+
+    if (visibleStageIdx < 0 || !nodes[visibleStageIdx]) {
+      // No stage visible — park diamond at top
+      gsap.to(diamonds, { y: 0, duration: 0.6, ease: "power2.out" });
+      return;
+    }
+
+    const node = nodes[visibleStageIdx];
+    // Centre of the node relative to the timeline track
+    const targetY = node.offsetTop + node.offsetHeight / 2 - 48;
+    gsap.to(diamonds, { y: targetY, duration: 0.7, ease: "power2.inOut" });
+  }, [visibleStageIdx]);
+
   // IntersectionObserver — track which stage is centred in viewport
   // rootMargin shrinks the detection zone to middle 40% of screen height
   // so only the most prominent stage triggers, and we reset when it exits
@@ -218,18 +237,6 @@ export default function DiamondJourneyPage() {
     }
 
     if (document.querySelector(".traveling-diamond")) {
-      gsap.to(".traveling-diamond", {
-        scrollTrigger: {
-          trigger: "#timeline-track",
-          start: "top center", end: "bottom 85%", scrub: 1,
-        },
-        y: () => {
-          const track = document.getElementById("timeline-track");
-          return track ? track.offsetHeight - 96 : 0;
-        },
-        ease: "none",
-      });
-
       gsap.to(".diamond-bounce", {
         y: -8, duration: 2, repeat: -1, yoyo: true, ease: "power1.inOut",
       });
