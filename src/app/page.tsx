@@ -164,7 +164,7 @@ export default function HomePage() {
         </Link>
 
         <div className="hidden md:flex items-center gap-8">
-          <Link href="/blockchain" className="text-xs font-medium text-white/60 hover:text-white transition-colors">Blockchain Tracking</Link>
+          <Link href="/blockchain" className="text-xs font-medium text-white/60 hover:text-white transition-colors">Diamond Tracking</Link>
         </div>
 
         <div className="flex items-center">
@@ -241,7 +241,7 @@ export default function HomePage() {
           <div className="hero-elem opacity-0 inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-white/5 backdrop-blur-md mb-8">
             <Shield className="w-3.5 h-3.5 text-sky-blue" />
             <span className="text-[10px] font-bold tracking-widest uppercase text-white/80">
-              Blockchain Verified Provenance
+              The Diamond Story
             </span>
           </div>
 
@@ -250,8 +250,7 @@ export default function HomePage() {
           </h1>
 
           <p className="hero-elem opacity-0 mt-6 text-sm md:text-base text-white/60 max-w-2xl leading-relaxed">
-            Securely verify the unique history and ethical journey of your gemstone
-            through our proprietary blockchain-ledger precision tracking.
+            Securely verify the unique history and ethical journey of your gemstone through our proprietary precision tracking and provenance system.            
           </p>
 
           {/* Inline Search Bar */}
@@ -355,7 +354,7 @@ export default function HomePage() {
             </div>
 
             <h3 className="text-xl font-display font-medium text-white mb-4">
-              Precision Blockchain Security
+              Precision Security
             </h3>
             <p className="text-sm text-white/50 max-w-sm leading-relaxed mb-8">
               Our private blockchain infrastructure ensures that every stone's
@@ -542,16 +541,9 @@ export default function HomePage() {
               <video
                 src={VIDEOS.planning["ABT077-1"]}
                 autoPlay muted loop playsInline
-                className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-90 transition-opacity duration-500"
+                className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1526] via-[#0B1526]/30 to-transparent" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur border border-white/20 flex items-center justify-center">
-                  <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1526] via-transparent to-transparent" />
             </div>
             <div className="p-5">
               <div className="text-[10px] font-mono text-sky-blue/70 uppercase tracking-widest mb-2">Planning Video</div>
