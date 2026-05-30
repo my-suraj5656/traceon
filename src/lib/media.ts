@@ -1,12 +1,22 @@
 const CDN = "https://res.cloudinary.com/dgqocqvf6";
 
+// Converts old relative paths (stored in DB before Cloudinary migration) to full CDN URLs.
+// Absolute URLs pass through unchanged.
+export function normalizeMediaUrl(url: string): string {
+  if (!url) return url;
+  if (url.startsWith("http://") || url.startsWith("https://")) return url;
+  const path = url.startsWith("/") ? url : `/${url}`;
+  const isVideo = /\.(mp4|mov|webm|avi|ogg)/i.test(path);
+  return `${CDN}/${isVideo ? "video" : "image"}/upload/traceon${path}`;
+}
+
 export const VIDEOS = {
   hero:           `${CDN}/video/upload/traceon/videos/3rdd.mp4`,
   display:        `${CDN}/video/upload/traceon/videos/display.mp4`,
   fallingDiamonds:`${CDN}/video/upload/traceon/videos/falling-diamonds.mp4`,
   journey:        `${CDN}/video/upload/traceon/journey/full-journey.mp4`,
   laser:          `${CDN}/video/upload/v1780057399/traceon/laser/laser.mp4`,
-  bruting:        `${CDN}/video/upload/traceon/bruting/bruting.mp4`,
+  bruting:        `${CDN}/video/upload/v1780056144/traceon/bruting/bruting.mp4`,
   polishing:      `${CDN}/video/upload/v1780120905/traceon/polishing/polishing.mp4`,
   grading:        `${CDN}/video/upload/v1780113456/traceon/grading/grading.mp4`,
   planning: {

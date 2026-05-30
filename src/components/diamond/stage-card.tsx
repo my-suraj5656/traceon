@@ -8,6 +8,7 @@ import {
   Gem, Search, Package, Barcode, Camera, ScanLine, Fingerprint,
   Monitor, ShieldCheck, Zap, Box, Sparkles, Award, Image, type LucideIcon,
 } from "lucide-react";
+import { normalizeMediaUrl } from "@/lib/media";
 
 const iconMap: Record<string, LucideIcon> = {
   gem: Gem, search: Search, package: Package, barcode: Barcode,
@@ -194,6 +195,7 @@ export default function StageCard({
         urls = [val];
       }
     }
+    urls = urls.map(normalizeMediaUrl);
 
     const mediaType = getMediaType(key);
     const label = getFieldLabel(key);

@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRouter } from "next/navigation";
-import { VIDEOS, IMAGES } from "@/lib/media";
+import { VIDEOS, IMAGES, normalizeMediaUrl } from "@/lib/media";
 import {
   Gem,
   Search,
@@ -470,8 +470,8 @@ export default function HomePage() {
             </div>
           ))}
           {featuredDiamonds.map((diamond) => {
-            const roughImg = Array.isArray(diamond.stage5?.rawImageUrls) ? diamond.stage5.rawImageUrls[0] : null;
-            const polishedImg = Array.isArray(diamond.stage14?.finalImageSet) ? diamond.stage14.finalImageSet[0] : null;
+            const roughImg = Array.isArray(diamond.stage5?.rawImageUrls) ? normalizeMediaUrl(diamond.stage5.rawImageUrls[0]) : null;
+            const polishedImg = Array.isArray(diamond.stage14?.finalImageSet) ? normalizeMediaUrl(diamond.stage14.finalImageSet[0]) : null;
             const carat = diamond.stage13?.finalCarat ?? "—";
             const color = diamond.stage13?.finalColor ?? "—";
             const clarity = diamond.stage13?.finalClarity ?? "—";
