@@ -95,15 +95,23 @@ export default function DiamondJourneyPage() {
     }
   })();
 
-  // IntersectionObserver — track which stage is currently centred in viewport
+  // IntersectionObserver — track which stage is centred in viewport
+  // rootMargin shrinks the detection zone to middle 40% of screen height
+  // so only the most prominent stage triggers, and we reset when it exits
   useEffect(() => {
     if (isLoading || !diamond) return;
     const nodes = Array.from(document.querySelectorAll(".timeline-node"));
     if (!nodes.length) return;
     const observers = nodes.map((node, idx) => {
       const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setVisibleStageIdx(idx); },
-        { threshold: 0.4 }
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setVisibleStageIdx(idx);
+          } else {
+            setVisibleStageIdx((prev) => (prev === idx ? -1 : prev));
+          }
+        },
+        { threshold: 0.3, rootMargin: "-28% 0px -28% 0px" }
       );
       obs.observe(node);
       return obs;
