@@ -43,7 +43,7 @@ export default function DiamondJourneyPage() {
   const [journeyModal, setJourneyModal] = useState(false);
   const [showJourneyToast, setShowJourneyToast] = useState(false);
   const [toastDismissed, setToastDismissed] = useState(false);
-  const [diamondVideo, setDiamondVideo] = useState<{ url: string; label: string } | null>(null);
+  const [visibleStageIdx, setVisibleStageIdx] = useState<number>(-1);
   const [activeStageVideo, setActiveStageVideo] = useState<{ url: string; label: string } | null>(null);
   const journeyVideoRef = useRef<HTMLVideoElement>(null);
   const stageVideoRef = useRef<HTMLVideoElement>(null);
@@ -72,9 +72,11 @@ export default function DiamondJourneyPage() {
     return () => obs.disconnect();
   }, [isLoading, diamond, toastDismissed]);
 
-  // Returns the process video for a given stage number (if any)
-  const getStageVideo = (stageNum: number): { url: string; label: string } | null => {
-    if (!diamond) return null;
+  // Compute stage video for visible stage (derived — no state setter needed)
+  const diamondVideo = (() => {
+    if (!diamond || visibleStageIdx < 0) return null;
+    const stageNum = stages[visibleStageIdx]?.number;
+    if (!stageNum) return null;
     const planningVideo = diamond.stage5?.video360Url
       ? { url: normalizeMediaUrl(diamond.stage5.video360Url), label: "Planning Video" }
       : null;
@@ -91,14 +93,29 @@ export default function DiamondJourneyPage() {
       }
       default: return null;
     }
-  };
+  })();
+
+  // IntersectionObserver — track which stage is currently centred in viewport
+  useEffect(() => {
+    if (isLoading || !diamond) return;
+    const nodes = Array.from(document.querySelectorAll(".timeline-node"));
+    if (!nodes.length) return;
+    const observers = nodes.map((node, idx) => {
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setVisibleStageIdx(idx); },
+        { threshold: 0.4 }
+      );
+      obs.observe(node);
+      return obs;
+    });
+    return () => observers.forEach((obs) => obs.disconnect());
+  }, [isLoading, diamond]);
 
   // Auto-scroll through stages after page loads
   useEffect(() => {
     if (isLoading || !diamond) return;
 
-    // Only auto-scroll on fresh page load, not on browser back
-    if (window.performance.navigation.type === 2) return; // TYPE_BACK_FORWARD
+    if (window.performance.navigation.type === 2) return;
 
     let stopped = false;
     let timeoutId: ReturnType<typeof setTimeout>;
@@ -111,28 +128,18 @@ export default function DiamondJourneyPage() {
     timeoutId = setTimeout(() => {
       const nodes = Array.from(document.querySelectorAll(".timeline-node"));
       if (!nodes.length) return;
-
       let i = 0;
       const scrollNext = () => {
         if (stopped || i >= nodes.length) return;
         nodes[i].scrollIntoView({ behavior: "smooth", block: "center" });
-        // Set stage video on diamond for this stage
-        const stageNum = stages[i]?.number;
-        setDiamondVideo(stageNum ? getStageVideo(stageNum) : null);
         i++;
-        if (i >= nodes.length) {
-          // All stages done — revert to journey video
-          timeoutId = setTimeout(() => setDiamondVideo(null), 4000);
-        } else {
-          timeoutId = setTimeout(scrollNext, 4000);
-        }
+        timeoutId = setTimeout(scrollNext, 4000);
       };
       scrollNext();
     }, 3000);
 
     return () => {
       stop();
-      setDiamondVideo(null);
       window.removeEventListener("touchstart", stop);
       window.removeEventListener("wheel", stop);
       window.removeEventListener("keydown", stop);
