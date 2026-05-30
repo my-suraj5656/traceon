@@ -7,6 +7,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRouter } from "next/navigation";
 import { VIDEOS, IMAGES, normalizeMediaUrl } from "@/lib/media";
+import Footer from "@/components/shared/footer";
 import {
   Gem,
   Search,
@@ -443,7 +444,7 @@ export default function HomePage() {
             From Rough to Radiant
           </h2>
           <p className="mt-4 text-sm text-white/50 max-w-xl mx-auto">
-            Real stones. Real journey. Every image is blockchain-authenticated.
+            Real stones. Real journey. Every image is authenticated.
           </p>
         </div>
 
@@ -586,28 +587,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 bg-[#1e2638]/40 border-t border-white/5 px-6 py-12">
-        <div className="max-w-6xl mx-auto flex flex-col items-center gap-8">
-          <div className="font-display font-medium text-white">TraceOn</div>
-
-          <div className="flex flex-wrap justify-center gap-6 md:gap-10">
-            <Link href="/about" className="text-xs text-white/50 hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="/about" className="text-xs text-white/50 hover:text-white transition-colors">Terms of Service</Link>
-            <Link href="/about" className="text-xs text-white/50 hover:text-white transition-colors">Blockchain Verification</Link>
-          </div>
-
-          <div className="text-[10px] text-white/30">
-            © {new Date().getFullYear()} TraceOn Ateliers. All rights reserved.
-          </div>
-
-          <div className="flex items-center gap-4 text-white/40">
-            <Globe className="w-4 h-4 hover:text-white cursor-pointer transition-colors" />
-            <Shield className="w-4 h-4 hover:text-white cursor-pointer transition-colors" />
-            <Fingerprint className="w-4 h-4 hover:text-white cursor-pointer transition-colors" />
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

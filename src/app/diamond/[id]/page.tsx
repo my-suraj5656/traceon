@@ -12,6 +12,7 @@ import {
 import Link from "next/link";
 import { stages } from "@/lib/design-tokens";
 import { VIDEOS, IMAGES } from "@/lib/media";
+import Footer from "@/components/shared/footer";
 import StageCard from "@/components/diamond/stage-card";
 import { useParams } from "next/navigation";
 
@@ -660,18 +661,7 @@ export default function DiamondJourneyPage() {
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="relative z-10 bg-[#1e2638]/40 border-t border-white/5 px-6 md:px-12 py-6 no-print">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs text-white/40">
-            <Gem className="w-3 h-3 text-sky-blue" />
-            TraceOn Ateliers Â· Â© {new Date().getFullYear()}
-          </div>
-          <Link href="/search" className="text-xs text-white/40 hover:text-white transition-colors">
-            Search Another Diamond
-          </Link>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
