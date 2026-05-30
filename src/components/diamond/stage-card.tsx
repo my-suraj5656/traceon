@@ -116,9 +116,9 @@ export default function StageCard({
   const [activeMedia, setActiveMedia] = useState<MediaItem | null>(null);
 
   const statusStyles = {
-    completed: "shadow-[0_0_15px_rgba(165,215,232,0.05)] border-white/10",
-    active: "shadow-[0_0_20px_rgba(87,108,188,0.15)] border-[#576CBC]/40",
-    pending: "border-dashed border-white/10 opacity-60",
+    completed: "shadow-[0_0_18px_rgba(165,215,232,0.12)] border-[#A5D7E8]/40",
+    active: "shadow-[0_0_24px_rgba(87,108,188,0.3)] border-[#576CBC]/80",
+    pending: "border-dashed border-white/25 opacity-60",
   };
 
   const nodeStyles = {
