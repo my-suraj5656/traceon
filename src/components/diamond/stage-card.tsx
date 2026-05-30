@@ -176,9 +176,13 @@ export default function StageCard({
       : key === "polishingVideoUrl" ? "Polishing Process Video"
       : key.replace(/([A-Z])/g, " $1").replace(/_/g, " ");
 
-  const getMediaType = (key: string): "video" | "image" | "360" => {
+  const getMediaType = (key: string, url?: string): "video" | "image" | "360" => {
     const lk = key.toLowerCase();
-    if (lk.includes("yehuda360")) return "360";
+    if (lk.includes("yehuda360")) {
+      // If the stored URL is actually a video file, render as video not iframe
+      if (url && /\.(mp4|mov|webm|avi|ogg)/i.test(url)) return "video";
+      return "360";
+    }
     if (lk.includes("video")) return "video";
     return "image";
   };
@@ -197,19 +201,20 @@ export default function StageCard({
     }
     urls = urls.map(normalizeMediaUrl);
 
-    const mediaType = getMediaType(key);
     const label = getFieldLabel(key);
-    const isVideo = mediaType === "video";
-    const is360 = mediaType === "360";
 
     return (
       <div className="flex flex-wrap gap-2 mt-1">
-        {urls.map((url, idx) => (
+        {urls.map((url, idx) => {
+          const urlType = getMediaType(key, url);
+          const urlIsVideo = urlType === "video";
+          const urlIs360 = urlType === "360";
+          return (
           <button
             key={idx}
             onClick={(e) => {
               e.stopPropagation();
-              setActiveMedia({ url, type: mediaType, label: urls.length > 1 ? `${label} #${idx + 1}` : label });
+              setActiveMedia({ url, type: urlType, label: urls.length > 1 ? `${label} #${idx + 1}` : label });
             }}
             className="group relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_16px_rgba(165,215,232,0.2)]"
           >
@@ -230,11 +235,11 @@ export default function StageCard({
             <span className="absolute inset-[1.5px] rounded-[6px] bg-[#0B1526] group-hover:bg-[#0d1a30] transition-colors" />
             {/* Content */}
             <span className="relative z-10 flex items-center gap-1.5 text-[#A5D7E8] group-hover:text-white transition-colors">
-              {is360 ? (
+              {urlIs360 ? (
                 <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
                 </svg>
-              ) : isVideo ? (
+              ) : urlIsVideo ? (
                 <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
               ) : (
                 <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -242,12 +247,13 @@ export default function StageCard({
                 </svg>
               )}
               <span>
-                {is360 ? "Open 360°" : isVideo ? "Play Video" : "View Image"}
+                {urlIs360 ? "Open 360°" : urlIsVideo ? "Play Video" : "View Image"}
                 {urls.length > 1 ? ` #${idx + 1}` : ""}
               </span>
             </span>
           </button>
-        ))}
+          );
+        })}
       </div>
     );
   };
