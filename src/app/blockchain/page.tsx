@@ -393,7 +393,7 @@ export default function BlockchainPage() {
                 <Cpu className="w-3.5 h-3.5 text-sky-blue" />
                 Ledger Block Height
               </div>
-              <p className="text-xl md:text-2xl font-mono font-medium text-white tracking-tight">
+              <p className="text-base md:text-2xl font-mono font-medium text-white tracking-tight truncate">
                 #{ledgerHeight.toLocaleString()}
               </p>
               <div className="mt-2 text-[9px] text-sky-blue/60 flex items-center gap-1">
@@ -408,7 +408,7 @@ export default function BlockchainPage() {
                 <Activity className="w-3.5 h-3.5 text-sky-blue" />
                 Hashing Velocity
               </div>
-              <p className="text-xl md:text-2xl font-mono font-medium text-white tracking-tight">
+              <p className="text-base md:text-2xl font-mono font-medium text-white tracking-tight truncate">
                 {hashRate} GH/s
               </p>
               <div className="mt-2 text-[9px] text-white/40">
@@ -422,8 +422,8 @@ export default function BlockchainPage() {
                 <Network className="w-3.5 h-3.5 text-sky-blue" />
                 Consensus Validators
               </div>
-              <p className="text-xl md:text-2xl font-mono font-medium text-sky-blue tracking-tight">
-                {activeValidators} / 24 Online
+              <p className="text-base md:text-2xl font-mono font-medium text-sky-blue tracking-tight truncate">
+                {activeValidators} / 24<span className="hidden sm:inline"> Online</span>
               </p>
               <div className="mt-2 text-[9px] text-emerald-400/80 flex items-center gap-1">
                 <span className="w-1 h-1 rounded-full bg-emerald-400" />
@@ -437,7 +437,7 @@ export default function BlockchainPage() {
                 <Clock className="w-3.5 h-3.5 text-sky-blue" />
                 Next Block Audit
               </div>
-              <p className="text-xl md:text-2xl font-mono font-medium text-white tracking-tight">
+              <p className="text-base md:text-2xl font-mono font-medium text-white tracking-tight truncate">
                 in {countdown}s
               </p>
               <div className="mt-2 text-[9px] text-white/40 truncate">

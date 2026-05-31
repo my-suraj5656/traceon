@@ -554,7 +554,7 @@ export default function DiamondJourneyPage() {
               return (
                 <div
                   key={stage.number}
-                  className={`timeline-node opacity-0 relative pl-16 md:pl-0 py-6 ${i % 2 === 0
+                  className={`timeline-node opacity-0 relative pl-20 md:pl-0 py-6 ${i % 2 === 0
                       ? "timeline-left md:pr-[calc(50%+2.5rem)] md:text-right"
                       : "timeline-right md:pl-[calc(50%+2.5rem)]"
                     }`}
@@ -626,7 +626,7 @@ export default function DiamondJourneyPage() {
       {/* Final Grading Certificate */}
       {diamond.stage13 && (
         <section className="certificate-section relative z-10 px-6 md:px-12 py-20 flex justify-center">
-          <div className="certificate-card opacity-0 w-full max-w-3xl rounded-[2.5rem] bg-gradient-to-b from-[#0B1526] to-[#070e17] border border-white/5 p-10 md:p-16 relative overflow-hidden">
+          <div className="certificate-card opacity-0 w-full max-w-3xl rounded-[2.5rem] bg-gradient-to-b from-[#0B1526] to-[#070e17] border border-white/5 p-6 md:p-16 relative overflow-hidden">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-24 bg-sky-blue/5 blur-3xl rounded-full" />
 
@@ -635,7 +635,7 @@ export default function DiamondJourneyPage() {
               <h2 className="font-display text-2xl md:text-3xl font-medium mb-1 text-white">Diamond Certificate</h2>
               <p className="text-sm font-mono text-sky-blue/80 mb-10">{diamond.diamonddnaId}</p>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-left bg-white/5 rounded-3xl p-8 border border-white/5">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 text-left bg-white/5 rounded-3xl p-5 md:p-8 border border-white/5">
                 {[
                   { label: "Carat", value: `${diamond.stage13.finalCarat} ct` },
                   { label: "Color", value: diamond.stage13.finalColor },

@@ -271,7 +271,7 @@ export default function StageCard({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-50px" }}
         transition={{ duration: 0.5, delay: number * 0.05 }}
-        className={`rounded-[1.5rem] bg-[#0B1526]/60 border border-white/5 backdrop-blur-md ${statusStyles[status]} cursor-pointer transition-all ${compact ? "p-4" : "px-6 py-8"}`}
+        className={`rounded-[1.5rem] bg-[#0B1526]/60 border border-white/5 backdrop-blur-md ${statusStyles[status]} cursor-pointer transition-all ${compact ? "p-4" : "px-4 py-5 md:px-6 md:py-8"}`}
         onClick={onClick}
         whileHover={{ scale: 1.01, backgroundColor: "rgba(11, 21, 38, 0.8)" }}
         whileTap={{ scale: 0.99 }}
@@ -299,7 +299,7 @@ export default function StageCard({
 
             {!compact && entries.length > 0 && (
               <>
-                <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-4">
+                <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-4 md:gap-x-6">
                   {visibleEntries.map(([key, value]) => (
                     <div key={key} className="flex flex-col">
                       <span className="text-[10px] text-white/40 uppercase tracking-widest font-semibold mb-1">

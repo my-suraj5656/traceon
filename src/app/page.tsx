@@ -558,7 +558,7 @@ export default function HomePage() {
 
       {/* CTA Section */}
       <section className="cta-section relative z-10 px-6 md:px-12 py-32 bg-[#070e17] flex justify-center">
-        <div className="cta-container opacity-0 w-full max-w-4xl rounded-[2.5rem] bg-gradient-to-b from-[#0B1526] to-[#070e17] border border-white/5 p-12 md:p-20 text-center relative overflow-hidden">
+        <div className="cta-container opacity-0 w-full max-w-4xl rounded-[2.5rem] bg-gradient-to-b from-[#0B1526] to-[#070e17] border border-white/5 p-8 md:p-20 text-center relative overflow-hidden">
           {/* Subtle top glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent" />
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-24 bg-sky-blue/5 blur-3xl rounded-full" />
