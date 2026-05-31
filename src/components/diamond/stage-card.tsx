@@ -282,7 +282,7 @@ export default function StageCard({
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-2">
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-2">
               <span className="text-xs font-mono text-white/40 uppercase tracking-widest">
                 Stage {String(displayNumber ?? number).padStart(2, "0")}
               </span>
@@ -299,7 +299,7 @@ export default function StageCard({
 
             {!compact && entries.length > 0 && (
               <>
-                <div className="mt-5 grid grid-cols-2 gap-x-3 gap-y-4 md:gap-x-6">
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-y-3 sm:gap-x-3 sm:gap-y-4 md:gap-x-6">
                   {visibleEntries.map(([key, value]) => (
                     <div key={key} className="flex flex-col">
                       <span className="text-[10px] text-white/40 uppercase tracking-widest font-semibold mb-1">
