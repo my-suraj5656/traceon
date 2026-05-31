@@ -19,7 +19,7 @@ export const VIDEOS = {
   hero:           `${CDN}/video/upload/traceon/videos/3rdd.mp4`,
   display:        `${CDN}/video/upload/traceon/videos/display.mp4`,
   fallingDiamonds:`${CDN}/video/upload/traceon/videos/falling-diamonds.mp4`,
-  journey:        `${CDN}/video/upload/traceon/journey/full-journey.mp4`,
+  journey:        `${CDN}/video/upload/v1780204313/traceon/journey/full-journey.mp4`,
   laser:          `${CDN}/video/upload/v1780057399/traceon/laser/laser.mp4`,
   bruting:        `${CDN}/video/upload/v1780056144/traceon/bruting/bruting.mp4`,
   polishing:      `${CDN}/video/upload/v1780120905/traceon/polishing/polishing.mp4`,
