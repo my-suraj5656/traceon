@@ -12,8 +12,16 @@ const roleRouteMap: Record<string, string[]> = {
   EMPLOYEE: ["/employee"],
 };
 
+// Login pages that must remain publicly accessible
+const publicAuthPages = ["/superadmin/login", "/admin/login"];
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Allow login pages through unconditionally
+  if (publicAuthPages.some((p) => pathname === p)) {
+    return NextResponse.next();
+  }
 
   // Check if the route requires authentication
   const isProtected = protectedRoutes.some((route) =>
@@ -73,5 +81,12 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/superadmin/:path*", "/admin/:path*", "/employee/:path*"],
+  matcher: [
+    "/superadmin",
+    "/superadmin/:path*",
+    "/admin",
+    "/admin/:path*",
+    "/employee",
+    "/employee/:path*",
+  ],
 };
