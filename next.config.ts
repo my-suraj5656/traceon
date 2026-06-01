@@ -5,11 +5,13 @@ const withPWA = withPWAInit({
   dest: "public",
   disable: process.env.NODE_ENV === "development",
   register: true,
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
+  cacheOnFrontEndNav: false,
+  aggressiveFrontEndNavCaching: false,
   reloadOnOnline: true,
   workboxOptions: {
     disableDevLogs: true,
+    // Never cache authenticated routes — SW would serve cached redirect-to-login
+    navigateFallbackDenylist: [/^\/superadmin/, /^\/admin/, /^\/employee/, /^\/api/],
   },
 });
 
