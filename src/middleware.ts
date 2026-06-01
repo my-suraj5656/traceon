@@ -38,8 +38,9 @@ export async function middleware(request: NextRequest) {
     request.headers.get("authorization")?.replace("Bearer ", "");
 
   if (!token) {
-    // Redirect to login
-    const loginUrl = new URL("/login", request.url);
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.search = "";
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);
   }
@@ -48,8 +49,9 @@ export async function middleware(request: NextRequest) {
   const payload = await verifyAccessToken(token);
 
   if (!payload) {
-    // Invalid token — redirect to login
-    const loginUrl = new URL("/login", request.url);
+    const loginUrl = request.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.search = "";
     loginUrl.searchParams.set("redirect", pathname);
     const response = NextResponse.redirect(loginUrl);
     response.cookies.delete("access_token");
@@ -61,14 +63,15 @@ export async function middleware(request: NextRequest) {
   const hasAccess = allowedRoutes.some((route) => pathname.startsWith(route));
 
   if (!hasAccess) {
-    // Redirect to appropriate dashboard based on role
     const dashboardMap: Record<string, string> = {
       SUPER_ADMIN: "/superadmin",
       ADMIN: "/admin",
       EMPLOYEE: "/employee",
     };
-    const dashUrl = dashboardMap[payload.role] || "/";
-    return NextResponse.redirect(new URL(dashUrl, request.url));
+    const dashUrl = request.nextUrl.clone();
+    dashUrl.pathname = dashboardMap[payload.role] || "/";
+    dashUrl.search = "";
+    return NextResponse.redirect(dashUrl);
   }
 
   // Attach user info to headers for downstream use
